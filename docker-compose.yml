@@ -1,0 +1,121 @@
+version: '3.7'
+networks:
+  traefik:
+
+
+services:
+  # RIUNNE (backend) webapp container
+  riunnedspace:
+    environment:
+      dspace__P__dir: /dspace
+      dspace__P__server__P__url: http://10.60.80.250:8080/server
+      dspace__P__ui__P__url: http://10.60.80.250:4000
+      dspace__P__name: 'Local: Repositorio Institucional UNNE'
+      db__P__url: 'jdbc:postgresql://riunnedb:5432/dspace'
+      solr__P__server: http://10.60.80.250:8983/solr
+    #image: riunne/dspace:7.v5
+    image: dspace/dspace:dspace-7.6
+
+    depends_on:
+      - riunnedb
+    networks:
+      traefik:
+    ports:
+      - published: 8080
+        target: 8080
+
+    stdin_open: true
+    tty: true
+    volumes:
+      # Keep DSpace assetstore directory between reboots
+      - assetstore_76:/dspace/assetstore
+      - dspace_76:/dspace
+
+    entrypoint:
+      - /bin/bash
+      - '-c'
+      - |+
+        while (!</dev/tcp/riunnedb/5432) > /dev/null 2>&1; do sleep 1; done;
+        /dspace/bin/dspace database migrate
+        catalina.sh run
+         
+  # DSpace database container
+  riunnedb:
+    environment:
+      PGDATA: /pgdata
+      POSTGRES_PASSWORD: dspace
+    # Uses a custom Postgres image with pgcrypto installed
+    image: dspace/dspace-postgres-pgcrypto:dspace-7.6
+    networks:
+      traefik:
+    ports:
+      - published: 5432
+        target: 5432
+    stdin_open: true
+    tty: true
+    volumes:
+      - pgdata_76:/pgdata
+
+  # RIUNNE Angular container
+  riunneangular:
+    environment:
+      DSPACE_UI_SSL: 'false'
+      DSPACE_UI_HOST: 10.60.80.250
+      DSPACE_UI_PORT: '4000'
+      DSPACE_UI_NAMESPACE: /
+      DSPACE_REST_SSL: 'false'
+      DSPACE_REST_HOST: 10.60.80.250
+      DSPACE_REST_PORT: 8080
+      DSPACE_REST_NAMESPACE: /server
+
+    #image: riunne/angular:7.v5
+    image: dspace/dspace-angular:dspace-7.6
+
+    networks:
+      traefik:
+    ports:
+      - published: 4000
+        target: 4000
+    stdin_open: true
+    tty: true
+    volumes:
+      - app_76:/app
+
+  # RIUNNE Solr container
+  riunnesolr:
+    image: dspace/dspace-solr:dspace-7.6
+    networks:
+      traefik:
+    ports:
+      - published: 8983
+        target: 8983
+    stdin_open: true
+    tty: true
+    working_dir: /var/solr/data
+    volumes:
+      # Keep Solr data directory between reboots
+      - solr_data_76:/var/solr/data
+      - solr_config_76:/opt/solr
+
+    entrypoint:
+      - /bin/bash
+      - '-c'
+      - |
+        init-var-solr
+        precreate-core authority /opt/solr/server/solr/configsets/authority
+        cp -r -u /opt/solr/server/solr/configsets/authority/* authority
+        precreate-core oai /opt/solr/server/solr/configsets/oai
+        cp -r -u /opt/solr/server/solr/configsets/oai/* oai
+        precreate-core search /opt/solr/server/solr/configsets/search
+        cp -r -u /opt/solr/server/solr/configsets/search/* search
+        precreate-core statistics /opt/solr/server/solr/configsets/statistics
+        cp -r -u /opt/solr/server/solr/configsets/statistics/* statistics
+        exec solr -f
+
+volumes:
+  assetstore_76:
+  pgdata_76:
+  solr_data_76:
+  solr_config_76:
+  dspace_76:
+  app_76:
