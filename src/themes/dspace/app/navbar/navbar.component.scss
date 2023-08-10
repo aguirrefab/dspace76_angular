@@ -12,6 +12,7 @@ nav.navbar {
     position: absolute;
     overflow: hidden;
     height: 0;
+
     &.open {
       height: 100vh; //doesn't matter because wrapper is sticky
     }
@@ -28,17 +29,21 @@ nav.navbar {
 /* TODO remove when https://github.com/twbs/bootstrap/issues/24726 is fixed */
 .navbar-expand-md.navbar-container {
   @media screen and (max-width: map-get($grid-breakpoints, md)-0.02) {
-    > .navbar-inner-container {
+    >.navbar-inner-container {
       padding: 0 var(--bs-spacer);
+
       a.navbar-brand {
         display: none;
       }
+
       .navbar-collapsed {
         display: none;
       }
     }
+
     padding: 0;
   }
+
   height: 80px;
 }
 
@@ -50,6 +55,7 @@ a.navbar-brand img {
   ::ng-deep a.nav-link {
     color: var(--ds-navbar-link-color);
   }
+
   ::ng-deep a.nav-link:hover {
     color: var(--ds-navbar-link-color-hover);
   }

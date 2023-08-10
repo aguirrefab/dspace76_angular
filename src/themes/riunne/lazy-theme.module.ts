@@ -83,9 +83,7 @@ import { CommunityListComponent } from './app/community-list-page/community-list
 
 import { ComcolPageHandleComponent } from './app/shared/comcol-page-handle/comcol-page-handle.component';
 import { AuthNavMenuComponent } from './app/shared/auth-nav-menu/auth-nav-menu.component';
-import {
-  ExpandableNavbarSectionComponent
-} from './app/navbar/expandable-navbar-section/expandable-navbar-section.component';
+
 import {
   EditItemTemplatePageComponent
 } from './app/collection-page/edit-item-template-page/edit-item-template-page.component';
@@ -134,6 +132,10 @@ import {
 } from './app/item-page/simple/field-components/specific-field/title/item-page-title-field.component';
 import { MediaViewerComponent } from './app/item-page/media-viewer/media-viewer.component';
 import {
+  ExpandableNavbarSectionComponent
+} from './app/navbar/expandable-navbar-section/expandable-navbar-section.component';
+
+import {
   MediaViewerImageComponent
 } from './app/item-page/media-viewer/media-viewer-image/media-viewer-image.component';
 import {
@@ -141,13 +143,13 @@ import {
 } from './app/item-page/media-viewer/media-viewer-video/media-viewer-video.component';
 import { NgxGalleryModule } from '@kolkov/ngx-gallery';
 import {
-    DenyRequestCopyComponent
+  DenyRequestCopyComponent
 } from './app/request-copy/deny-request-copy/deny-request-copy.component';
 import {
-    EmailRequestCopyComponent
+  EmailRequestCopyComponent
 } from './app/request-copy/email-request-copy/email-request-copy.component';
 import {
-    GrantRequestCopyComponent
+  GrantRequestCopyComponent
 } from './app/request-copy/grant-request-copy/grant-request-copy.component';
 import { WorkspaceItemsDeletePageComponent } from './app/workspace-items-delete-page/workspace-items-delete/workspace-items-delete.component';
 import { ThumbnailComponent } from './app/thumbnail/thumbnail.component';
@@ -306,12 +308,12 @@ const DECLARATIONS = [
   ]
 })
 
-  /**
-   * This module serves as an index for all the components in this theme.
-   * It should import all other modules, so the compiler knows where to find any components referenced
-   * from a component in this theme
-   * It is purposefully not exported, it should never be imported anywhere else, its only purpose is
-   * to give lazily loaded components a context in which they can be compiled successfully
-   */
+/**
+ * This module serves as an index for all the components in this theme.
+ * It should import all other modules, so the compiler knows where to find any components referenced
+ * from a component in this theme
+ * It is purposefully not exported, it should never be imported anywhere else, its only purpose is
+ * to give lazily loaded components a context in which they can be compiled successfully
+ */
 class LazyThemeModule {
 }
